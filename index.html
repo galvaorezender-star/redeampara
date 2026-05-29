@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WILD PAIRS | RACHAKUKA - TELA CHEIA</title>
+    <title>WILD PAIRS | RACHAKUKA - 9x18</title>
     <style>
         * {
             margin: 0;
@@ -25,7 +25,7 @@
             overflow-y: auto;
         }
 
-        /* LOBBY FULLSCREEN - AGORA OCUPA 100% */
+        /* LOBBY FULLSCREEN */
         .lobby-screen {
             position: fixed;
             top: 0;
@@ -192,7 +192,7 @@
             color: #ffdd99;
         }
 
-        /* GAME CONTAINER - TELA CHEIA SEM BORDAS */
+        /* GAME CONTAINER - 9x18 COM SCROLL HORIZONTAL */
         .game-container {
             position: fixed;
             top: 0;
@@ -201,17 +201,15 @@
             bottom: 0;
             width: 100%;
             height: 100%;
-            min-height: 100vh;
             background: radial-gradient(circle at 20% 30%, #0f3823, #071a0e);
+            overflow-x: auto;
             overflow-y: auto;
-            padding: 15px 20px 30px;
+            padding: 15px 20px;
             display: none;
         }
         
-        /* Conteúdo interno do game sem largura máxima fixa */
         .game-content {
-            max-width: 1400px;
-            margin: 0 auto;
+            min-width: fit-content;
             width: 100%;
         }
         
@@ -219,7 +217,14 @@
             display: flex;
             flex-wrap: wrap;
             gap: 25px;
-            margin-bottom: 35px;
+            margin-bottom: 25px;
+            position: sticky;
+            top: 0;
+            background: rgba(15, 56, 35, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 10px;
+            border-radius: 40px;
+            z-index: 10;
         }
         .player-card-game {
             flex: 1;
@@ -246,19 +251,22 @@
             display: inline-block;
         }
         .player-name { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg,#2d6a2f,#1e4a1a); background-clip: text; -webkit-background-clip: text; color: transparent; }
-        .player-score { font-size: 3.5rem; font-weight: 900; color: #e08e2e; text-shadow: 3px 3px 0 #ffd58c; }
+        .player-score { font-size: 3rem; font-weight: 900; color: #e08e2e; text-shadow: 3px 3px 0 #ffd58c; }
         .turn-indicator { background: #f5bc70; display: inline-block; padding: 5px 18px; border-radius: 40px; font-weight: bold; }
+        
+        /* BOARD 9x18 */
         .board {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 18px;
-            justify-items: center;
+            grid-template-columns: repeat(9, minmax(100px, 120px));
+            gap: 15px;
+            justify-content: center;
             margin: 20px 0;
+            padding-bottom: 20px;
         }
+        
         .card {
             width: 100%;
             aspect-ratio: 3/4;
-            max-width: 130px;
             cursor: pointer;
             perspective: 800px;
         }
@@ -296,6 +304,7 @@
         .card-back::after { content: "🌿?"; font-size: 2rem; font-weight: bold; color: #ffefb9; position: absolute; }
         .card.matched { pointer-events: none; filter: drop-shadow(0 0 15px gold); animation: glowMatch 0.4s; }
         @keyframes glowMatch { 0% { transform: scale(1); } 50% { transform: scale(1.07); } }
+        
         .btn-modern {
             background: linear-gradient(135deg, #f7cf8c, #f3bc60);
             border: none;
@@ -317,6 +326,44 @@
             color: #ffefcf;
             margin-top: 20px;
         }
+        
+        /* CURIOSIDADE POPUP NO CENTRO DA TELA */
+        .curiosity-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(145deg, #1a472a, #0c2a1a);
+            border: 3px solid #ffd700;
+            border-radius: 60px;
+            padding: 25px 40px;
+            text-align: center;
+            z-index: 5000;
+            animation: popupAppear 0.3s ease-out;
+            box-shadow: 0 0 50px rgba(0,0,0,0.7);
+            max-width: 80%;
+            backdrop-filter: blur(20px);
+        }
+        .curiosity-popup .emoji {
+            font-size: 4rem;
+            margin-bottom: 10px;
+        }
+        .curiosity-popup .animal-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+        .curiosity-popup .curiosity-text {
+            font-size: 1.2rem;
+            color: #fff2cf;
+            max-width: 400px;
+        }
+        @keyframes popupAppear {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        
         .victory-overlay {
             position: fixed;
             top: 0;
@@ -337,16 +384,29 @@
             text-align: center;
             max-width: 500px;
         }
+        
+        @media (max-width: 1000px) {
+            .board { grid-template-columns: repeat(9, minmax(80px, 90px)); gap: 10px; }
+            .card-front, .card-back { font-size: 2rem; }
+            .card-front { font-size: 2.2rem; }
+            .player-name { font-size: 1.2rem; }
+            .player-score { font-size: 2rem; }
+        }
+        
+        @media (max-width: 850px) {
+            .board { grid-template-columns: repeat(9, minmax(65px, 75px)); gap: 8px; }
+            .card-front, .card-back { font-size: 1.5rem; }
+            .card-back::after { font-size: 1rem; content: "?"; }
+            .curiosity-popup { padding: 15px 25px; }
+            .curiosity-popup .emoji { font-size: 2.5rem; }
+            .curiosity-popup .animal-name { font-size: 1.2rem; }
+            .curiosity-popup .curiosity-text { font-size: 0.9rem; }
+        }
+        
         @media (max-width: 750px) {
             .lobby-card { padding: 30px 20px; }
             .lobby-title { font-size: 2.2rem; }
             .diff-title { font-size: 1.2rem; }
-            .difficulty-card { padding: 18px 8px; }
-            .diff-icon { font-size: 2.5rem; }
-            .player-name { font-size: 1.2rem; }
-            .player-score { font-size: 2rem; }
-            .card-front, .card-back { font-size: 2rem; }
-            .card-front { font-size: 2.2rem; }
         }
     </style>
 </head>
@@ -356,7 +416,7 @@
 <div class="lobby-screen" id="lobbyScreen">
     <div class="lobby-card">
         <div class="lobby-title">🐘 WILD PAIRS 🦒</div>
-        <div class="lobby-sub">⚡ Modo Duelo da Memória ⚡</div>
+        <div class="lobby-sub">⚡ Modo Duelo da Memória - FORMATO 9x18 ⚡</div>
         
         <div class="players-area">
             <div class="player-card-modern">
@@ -404,8 +464,8 @@
             </div>
         </div>
         
-        <button class="start-lobby-btn" id="startLobbyGameBtn">🌟 INICIAR JOGO 🌟</button>
-        <div class="warning-note">⚡ RACHAKUKA: Acertou continua, errou TODAS as cartas fecham! Jogue com tensão máxima!</div>
+        <button class="start-lobby-btn" id="startLobbyGameBtn">🌟 INICIAR JOGO 9x18 🌟</button>
+        <div class="warning-note">⚡ RACHAKUKA: Acertou continua, errou TODAS as cartas fecham! | 9 COLUNAS x 18 CARTAS</div>
     </div>
 </div>
 
@@ -421,15 +481,43 @@
             <button class="btn-modern" id="resetGameBtn">🔄 Reiniciar</button>
             <button class="btn-modern" id="exitLobbyBtn">🏠 Voltar ao Lobby</button>
         </div>
-        <div class="message" id="statusMsg">🐾 Boa sorte! Clique nas cartas.</div>
+        <div class="message" id="statusMsg">🐾 Boa sorte! Role para os lados para ver todas as cartas! 9x18</div>
     </div>
 </div>
 
 <script>
+    // ==================== CURIOSIDADES DOS ANIMAIS ====================
+    const animaisCuriosidades = {
+        "🦁": { nome: "Leão", curiosidade: "O rugido de um leão pode ser ouvido a até 8 km de distância!" },
+        "🐘": { nome: "Elefante", curiosidade: "Elefantes são os únicos mamíferos que não conseguem pular, mas são super inteligentes!" },
+        "🦒": { nome: "Girafa", curiosidade: "O pescoço da girafa tem apenas 7 vértebras, assim como o humano!" },
+        "🐧": { nome: "Pinguim", curiosidade: "Pinguins 'propõem casamento' dando uma pedrinha especial para a parceira." },
+        "🦊": { nome: "Raposa", curiosidade: "Raposas usam o campo magnético da Terra para caçar!" },
+        "🐼": { nome: "Panda", curiosidade: "Pandas passam 14 horas por dia comendo bambu - cerca de 12kg!" },
+        "🐨": { nome: "Coala", curiosidade: "Coalas dormem até 22 horas por dia por causa da dieta de baixa energia." },
+        "🦜": { nome: "Arara", curiosidade: "Araras formam casais para a vida toda e são super fiéis." },
+        "🐙": { nome: "Polvo", curiosidade: "Polvos têm três corações e sangue azul!" },
+        "🐢": { nome: "Tartaruga", curiosidade: "Tartarugas marinhas conseguem sentir o campo magnético da Terra para navegar." },
+        "🦚": { nome: "Pavão", curiosidade: "A cauda do pavão pode ter mais de 200 penas coloridas!" },
+        "🐺": { nome: "Lobo", curiosidade: "Uivam para se comunicar e marcar território - cada uivo é único!" },
+        "🦉": { nome: "Coruja", curiosidade: "Corujas podem girar a cabeça em até 270 graus!" },
+        "🐝": { nome: "Abelha", curiosidade: "Para fazer 1kg de mel, abelhas visitam 4 milhões de flores." },
+        "🐳": { nome: "Baleia", curiosidade: "O coração de uma baleia azul tem o tamanho de um carro pequeno!" },
+        "🦩": { nome: "Flamingo", curiosidade: "Flamingos são rosa porque comem camarões ricos em betacaroteno." },
+        "🐸": { nome: "Sapo", curiosidade: "Algumas rãs congelam no inverno e descongelam vivas na primavera!" },
+        "🐒": { nome: "Macaco", curiosidade: "Macacos-prego usam pedras como ferramentas para quebrar cocos." },
+        "🦧": { nome: "Orangotango", curiosidade: "Compartilham 97% do DNA com os humanos!" },
+        "🐅": { nome: "Tigre", curiosidade: "Cada tigre tem um padrão de listras único, como impressão digital." },
+        "🐆": { nome: "Leopardo", curiosidade: "Conseguem carregar presas até três vezes o seu peso para cima das árvores." },
+        "🦓": { nome: "Zebra", curiosidade: "Listras ajudam a confundir moscas e mosquitos!" },
+        "🦌": { nome: "Cervo", curiosidade: "Galhadas caem e renascem todos os anos!" },
+        "🦛": { nome: "Hipopótamo", curiosidade: "O suor do hipopótamo é vermelho e age como protetor solar." }
+    };
+    
     const randomNames = ["Lobo Alpha", "Raposa Neblina", "Coruja Sábia", "Jaguar Noturno", "Macaco Trovão", "Arara Azul", "Onça Pintada", "Capivara Mestra", "Gavião Real", "Preguiça Mágica", "Tamanduá Bandeira", "Jacaré Sorriso"];
     function getRandomName() { return randomNames[Math.floor(Math.random() * randomNames.length)]; }
     
-    // Configuração do jogo
+    // Configuração do jogo - 9x18 (162 cartas, 81 pares)
     let currentDifficulty = "easy";
     let players = ["", ""];
     let scores = [0, 0];
@@ -443,6 +531,10 @@
     let isNightmare = false;
     let isRachakuka = false;
     let gameActive = true;
+    
+    const BOARD_COLS = 9;
+    const BOARD_ROWS = 18;
+    const TOTAL_CARDS_9x18 = 162; // 9x18 = 162 cartas
     
     const lobbyScreen = document.getElementById('lobbyScreen');
     const gameContainer = document.getElementById('gameContainer');
@@ -463,6 +555,28 @@
     const randomP2 = document.getElementById('randomP2Btn');
     const rachakukaBadge1 = document.getElementById('rachakukaBadge1');
     const rachakukaBadge2 = document.getElementById('rachakukaBadge2');
+    
+    // Função para mostrar curiosidade no centro da tela
+    function showCuriosityPopup(icon) {
+        const animal = animaisCuriosidades[icon];
+        if (!animal) return;
+        
+        const popup = document.createElement('div');
+        popup.className = 'curiosity-popup';
+        popup.innerHTML = `
+            <div class="emoji">${icon}</div>
+            <div class="animal-name">🐾 ${animal.nome} 🐾</div>
+            <div class="curiosity-text">📖 ${animal.curiosidade}</div>
+        `;
+        document.body.appendChild(popup);
+        
+        // Remove o popup após 3 segundos
+        setTimeout(() => {
+            popup.style.opacity = '0';
+            popup.style.transition = 'opacity 0.3s';
+            setTimeout(() => popup.remove(), 300);
+        }, 3000);
+    }
     
     // Seleção de dificuldade
     const diffCards = document.querySelectorAll('.difficulty-card');
@@ -529,8 +643,7 @@
     
     function renderBoard() {
         boardDiv.innerHTML = '';
-        const cols = isRachakuka ? 5 : (isNightmare ? 6 : 4);
-        boardDiv.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+        boardDiv.style.gridTemplateColumns = `repeat(${BOARD_COLS}, minmax(100px, 120px))`;
         gameBoard.forEach((card, idx) => {
             const div = document.createElement('div'); div.className = 'card';
             if (card.matched) div.classList.add('matched');
@@ -563,6 +676,10 @@
             matchedSets++;
             scores[currentPlayer]++;
             updateScoresUI();
+            
+            // MOSTRA CURIOSIDADE NO CENTRO DA TELA
+            showCuriosityPopup(a.icon);
+            
             statusMsgDiv.innerHTML = `🎉 ${players[currentPlayer]} acertou o par! +1 ponto! Continue na mesma rodada! 🎉`;
             
             if (matchedSets === totalSets) {
@@ -593,6 +710,10 @@
         if (a.setId === b.setId && !a.matched && !b.matched) {
             a.matched = true; b.matched = true; updateCardUI(indices[0]); updateCardUI(indices[1]);
             matchedSets++; scores[currentPlayer]++; updateScoresUI();
+            
+            // MOSTRA CURIOSIDADE NO CENTRO DA TELA
+            showCuriosityPopup(a.icon);
+            
             statusMsgDiv.innerHTML = `🎉 ${players[currentPlayer]} acertou o par! +1 ponto! Continue! 🎉`;
             if (matchedSets === totalSets) { showVictoryScreen(); return; }
             selectedCards = []; lockBoard = false; updateTurnUI();
@@ -606,6 +727,10 @@
             a.matched = true; b.matched = true; c.matched = true;
             updateCardUI(indices[0]); updateCardUI(indices[1]); updateCardUI(indices[2]);
             matchedSets++; scores[currentPlayer]++; updateScoresUI();
+            
+            // MOSTRA CURIOSIDADE NO CENTRO DA TELA
+            showCuriosityPopup(a.icon);
+            
             statusMsgDiv.innerHTML = `🎉 ${players[currentPlayer]} formou um TRIO! +1 ponto! 🎉`;
             if (matchedSets === totalSets) { showVictoryScreen(); return; }
             selectedCards = []; lockBoard = false; updateTurnUI();
@@ -667,7 +792,7 @@
         totalSets = pairCount;
         matchedSets = 0;
         
-        const iconsBank = ["🦁","🐘","🦒","🐧","🦊","🐼","🐨","🦜","🐙","🐢","🦚","🐺","🦉","🐝","🐳","🦩"];
+        const iconsBank = Object.keys(animaisCuriosidades);
         const usedIcons = iconsBank.slice(0, pairCount);
         let deck = [];
         
@@ -684,7 +809,7 @@
         renderBoard();
         updateTurnUI();
         if (isRachakuka) statusMsgDiv.innerHTML = `⚡ RACHAKUKA ⚡ ${players[currentPlayer]} começa! ACERTE todos os pares sem errar! Errar fecha TODAS as cartas viradas!`;
-        else statusMsgDiv.innerHTML = `🌿 ${players[currentPlayer]} começa! Dificuldade: ${currentDifficulty.toUpperCase()} ${isNightmare ? '(TRIOS)' : '(PARES)'}`;
+        else statusMsgDiv.innerHTML = `🌿 ${players[currentPlayer]} começa! Dificuldade: ${currentDifficulty.toUpperCase()} ${isNightmare ? '(TRIOS)' : '(PARES)'} | 9x18`;
     }
     
     function resetGame() { if (timeoutId) clearTimeout(timeoutId); initGameFromLobby(); }
