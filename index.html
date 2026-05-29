@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>WILD PAIRS | RACHAKUKA - Modo Desafio</title>
+    <title>WILD PAIRS | RACHAKUKA - Modo Selvagem + Curiosidades</title>
     <style>
         * {
             margin: 0;
@@ -229,7 +229,6 @@
         .turn-indicator { background: #f5bc70; display: inline-block; padding: 5px 18px; border-radius: 40px; font-weight: bold; }
         .board {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
             gap: 18px;
             justify-items: center;
             margin: 20px 0;
@@ -314,6 +313,30 @@
             text-align: center;
             max-width: 500px;
         }
+        /* curiosidade toast */
+        .curiosity-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e2a1fdd;
+            backdrop-filter: blur(16px);
+            border-left: 10px solid #ffb347;
+            color: #ffefcf;
+            padding: 14px 28px;
+            border-radius: 60px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            z-index: 3000;
+            max-width: 85vw;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            animation: fadeInUp 0.3s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; bottom: 0; }
+            to { opacity: 1; bottom: 30px; }
+        }
         @media (max-width: 750px) {
             .lobby-card { padding: 30px 20px; }
             .lobby-title { font-size: 2.2rem; }
@@ -330,7 +353,7 @@
 <div class="lobby-screen" id="lobbyScreen">
     <div class="lobby-card">
         <div class="lobby-title">🐘 WILD PAIRS 🦒</div>
-        <div class="lobby-sub">⚡ Modo Duelo da Memória ⚡</div>
+        <div class="lobby-sub">⚡ Modo Duelo da Memória + Curiosidades ⚡</div>
         
         <div class="players-area">
             <div class="player-card-modern">
@@ -374,12 +397,12 @@
             <div class="difficulty-card rachakuka-card" data-diff="rachakuka">
                 <div class="diff-icon">⚡💢⚡</div>
                 <div class="diff-title">RACHAKUKA</div>
-                <div class="diff-desc">10 cartas · 5 pares · ERROU FECHA TUDO</div>
+                <div class="diff-desc">10 cartas · 5 pares · ERROU FECHA TUDO (INCLUINDO ACERTOS)</div>
             </div>
         </div>
         
         <button class="start-lobby-btn" id="startLobbyGameBtn">🌟 INICIAR JOGO 🌟</button>
-        <div class="warning-note">⚡ RACHAKUKA: Acertou continua, errou TODAS as cartas fecham! Jogue com tensão máxima!</div>
+        <div class="warning-note">⚡ RACHAKUKA: Errar fecha TODAS as cartas (mesmo as já acertadas)! Modo implacável!</div>
     </div>
 </div>
 
@@ -397,6 +420,26 @@
 </div>
 
 <script>
+    // Banco de curiosidades por animal (emoji como chave)
+    const curiosidades = {
+        "🦁": "O leão dorme até 20 horas por dia e é conhecido como o 'Rei da Selva'!",
+        "🐘": "Elefantes têm memória excepcional e reconhecem reflexos no espelho.",
+        "🦒": "As girafas têm o mesmo número de vértebras no pescoço que os humanos: 7!",
+        "🐧": "Pinguins propõem casamento com uma pedrinha para a parceira.",
+        "🦊": "Raposas usam o campo magnético da Terra para caçar.",
+        "🐼": "Pandas gigantes passam 14 horas por dia comendo bambu.",
+        "🐨": "Coalas têm impressões digitais tão parecidas com as humanas que enganam peritos.",
+        "🦜": "Papagaios vivem mais de 60 anos e podem imitar perfeitamente vozes.",
+        "🐙": "Polvos têm três corações e o sangue é azul.",
+        "🐢": "Tartarugas marinhas retornam à praia onde nasceram para desovar.",
+        "🦚": "O pavão abre a cauda para atrair a fêmea - são penas de até 2 metros!",
+        "🐺": "Lobos uivam para marcar território e se comunicar a até 10km.",
+        "🦉": "Corujas conseguem girar o pescoço até 270 graus.",
+        "🐝": "Abelhas fazem uma dança para indicar a localização do néctar.",
+        "🐳": "Baleias-azuis são os maiores animais que já existiram na Terra.",
+        "🦩": "Flamingos são rosas porque comem camarões ricos em pigmento."
+    };
+    
     const randomNames = ["Lobo Alpha", "Raposa Neblina", "Coruja Sábia", "Jaguar Noturno", "Macaco Trovão", "Arara Azul", "Onça Pintada", "Capivara Mestra", "Gavião Real", "Preguiça Mágica", "Tamanduá Bandeira", "Jacaré Sorriso"];
     function getRandomName() { return randomNames[Math.floor(Math.random() * randomNames.length)]; }
     
@@ -414,9 +457,6 @@
     let isNightmare = false;
     let isRachakuka = false;
     let gameActive = true;
-    
-    // Rachakuka específico: cartas abertas atualmente
-    let rachakukaOpenedCards = []; // armazena índices das cartas atualmente viradas (para poder fechar tudo no erro)
     
     const lobbyScreen = document.getElementById('lobbyScreen');
     const gameContainer = document.getElementById('gameContainer');
@@ -454,6 +494,15 @@
     
     function shuffleArray(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
     
+    function showCuriosity(icon) {
+        const text = curiosidades[icon] || `🐾 ${icon} é uma criatura fantástica da floresta!`;
+        const toast = document.createElement('div');
+        toast.className = 'curiosity-toast';
+        toast.innerHTML = `📖 CURIOSIDADE: ${text}`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 4000);
+    }
+    
     function updateScoresUI() { p1ScoreSpan.innerText = scores[0]; p2ScoreSpan.innerText = scores[1]; }
     
     function updateTurnUI() {
@@ -473,6 +522,7 @@
     
     function flipOpen(idx) { if (!gameBoard[idx].flipped && !gameBoard[idx].matched) { gameBoard[idx].flipped = true; updateCardUI(idx); } }
     function flipClose(idx) { if (gameBoard[idx].flipped && !gameBoard[idx].matched) { gameBoard[idx].flipped = false; updateCardUI(idx); } }
+    
     function updateCardUI(idx) {
         const card = gameBoard[idx];
         if (card.element) {
@@ -481,11 +531,25 @@
         }
     }
     
-    function closeAllCards() {
+    // Fecha TODAS as cartas, inclusive as combinadas (Rachakuka total reset)
+    function closeAllCardsIncludingMatched() {
         gameBoard.forEach((card, idx) => {
-            if (!card.matched && card.flipped) {
-                flipClose(idx);
+            if (card.matched) {
+                // No modo Rachakuka, ao errar, os pares acertados também são revertidos
+                card.matched = false;
+                card.flipped = false;
+            } else if (card.flipped) {
+                card.flipped = false;
             }
+            updateCardUI(idx);
+        });
+        matchedSets = 0;
+    }
+    
+    // Fecha apenas as não combinadas (modo normal)
+    function closeUnmatchedCards() {
+        gameBoard.forEach((card, idx) => {
+            if (!card.matched && card.flipped) flipClose(idx);
         });
     }
     
@@ -516,7 +580,7 @@
         document.getElementById('victoryExitBtn').onclick = () => { vicDiv.remove(); goToLobby(); };
     }
     
-    // Lógica de match para RACHAKUKA (pares)
+    // Lógica especial RACHAKUKA: ao errar, RESETA TODOS OS PARES (acertados somem)
     function checkMatchRachakuka(indices) {
         if (indices.length !== 2) return;
         const a = gameBoard[indices[0]], b = gameBoard[indices[1]];
@@ -527,30 +591,32 @@
             matchedSets++;
             scores[currentPlayer]++;
             updateScoresUI();
-            statusMsgDiv.innerHTML = `🎉 ${players[currentPlayer]} acertou o par! +1 ponto! Continue na mesma rodada! 🎉`;
+            showCuriosity(a.icon);
+            statusMsgDiv.innerHTML = `🎉 ${players[currentPlayer]} acertou o par! +1 ponto! Continue na mesma rodada! 🎉 ${a.icon} - Curiosidade apareceu!`;
             
             if (matchedSets === totalSets) {
                 showVictoryScreen();
                 return;
             }
-            // Limpa seleção e mantém turno (jogador continua)
             selectedCards = [];
             lockBoard = false;
             updateTurnUI();
         } else {
-            // Errou: fecha TODAS as cartas e passa o turno
-            statusMsgDiv.innerHTML = `💀 ${players[currentPlayer]} ERROU! Todas as cartas foram fechadas! Vez de ${players[currentPlayer === 0 ? 1 : 0]}. 💀`;
+            // ERROU: Fecha TODAS as cartas (incluindo as já combinadas!)
+            statusMsgDiv.innerHTML = `💥 RACHAKUKA: ${players[currentPlayer]} ERROU! Todas as cartas foram fechadas, incluindo pares já feitos! Vez trocada. 💥`;
             lockBoard = true;
             timeoutId = setTimeout(() => {
-                // Fecha todas as cartas não combinadas
-                closeAllCards();
+                closeAllCardsIncludingMatched(); // zera todos os matches
+                scores[currentPlayer] = Math.max(0, scores[currentPlayer] - 0); // não perde pontos, só reseta progresso
+                // Porém, reseta matchedSets (progresso da partida)
+                matchedSets = 0;
                 // Troca jogador
                 currentPlayer = currentPlayer === 0 ? 1 : 0;
                 updateTurnUI();
-                // Limpa seleção
+                updateScoresUI();
                 selectedCards = [];
                 lockBoard = false;
-                statusMsgDiv.innerHTML = `🎲 Vez de ${players[currentPlayer]}. Encontre os pares! (Errar fecha tudo)`;
+                statusMsgDiv.innerHTML = `🌀 RachaKuka ativado! Vez de ${players[currentPlayer]}. Cuidado: errar reseta tudo!`;
                 timeoutId = null;
             }, 800);
         }
@@ -562,7 +628,8 @@
         if (a.setId === b.setId && !a.matched && !b.matched) {
             a.matched = true; b.matched = true; updateCardUI(indices[0]); updateCardUI(indices[1]);
             matchedSets++; scores[currentPlayer]++; updateScoresUI();
-            statusMsgDiv.innerHTML = `🎉 ${players[currentPlayer]} acertou o par! +1 ponto! Continue! 🎉`;
+            showCuriosity(a.icon);
+            statusMsgDiv.innerHTML = `🎉 ${players[currentPlayer]} acertou o par! +1 ponto! Continue! ${a.icon} - Curiosidade! 🎉`;
             if (matchedSets === totalSets) { showVictoryScreen(); return; }
             selectedCards = []; lockBoard = false; updateTurnUI();
         } else { wrongTurn(indices); }
@@ -575,7 +642,8 @@
             a.matched = true; b.matched = true; c.matched = true;
             updateCardUI(indices[0]); updateCardUI(indices[1]); updateCardUI(indices[2]);
             matchedSets++; scores[currentPlayer]++; updateScoresUI();
-            statusMsgDiv.innerHTML = `🎉 ${players[currentPlayer]} formou um TRIO! +1 ponto! 🎉`;
+            showCuriosity(a.icon);
+            statusMsgDiv.innerHTML = `🎉 ${players[currentPlayer]} formou um TRIO! +1 ponto! 🎉 ${a.icon} - Curiosidade!`;
             if (matchedSets === totalSets) { showVictoryScreen(); return; }
             selectedCards = []; lockBoard = false; updateTurnUI();
         } else { wrongTurn(indices); }
@@ -652,7 +720,7 @@
         
         renderBoard();
         updateTurnUI();
-        if (isRachakuka) statusMsgDiv.innerHTML = `⚡ RACHAKUKA ⚡ ${players[currentPlayer]} começa! ACERTE todos os pares sem errar! Errar fecha TODAS as cartas!`;
+        if (isRachakuka) statusMsgDiv.innerHTML = `⚡ RACHAKUKA ⚡ ${players[currentPlayer]} começa! ACERTE todos os pares sem errar! Errar fecha TODAS as cartas, inclusive pares já feitos!`;
         else statusMsgDiv.innerHTML = `🌿 ${players[currentPlayer]} começa! Dificuldade: ${currentDifficulty.toUpperCase()} ${isNightmare ? '(TRIOS)' : '(PARES)'}`;
     }
     
