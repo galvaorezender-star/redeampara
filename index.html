@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
-    <title>Plataforma Formatura 2026 · Sistema </title>
+    <title>Plataforma Formatura 2026 · Sistema Premium</title>
     <style>
         * {
             margin: 0;
@@ -602,163 +602,424 @@
             font-size: 0.85rem;
             opacity: 0.6;
         }
+</style>
+</head>
+<body>
+    <div class="app">
+        <!-- ============================================================
+        HEADER
+        ============================================================ -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <div class="logo-icon">🎓</div>
+                    <h1>Formatura <span>2026</span></h1>
+                </div>
+                <div class="subtitle">Plataforma de Gestão · Controle de Pagamentos e Informações</div>
+            </div>
+            <div class="header-right">
+                <div class="header-badge">
+                    <span class="dot"></span>
+                    Sistema ativo · Turma 2026
+                </div>
+            </div>
+        </header>
 
-        /* ============================================================
-           INFORMAÇÕES - Layout Refinado
-           ============================================================ */
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 28px;
+        <!-- ============================================================
+        COUNTDOWN GLOBAL - DESTAQUE EM TODAS AS PÁGINAS
+        ============================================================ -->
+        <div class="countdown-global">
+            <div class="label">
+                ⏳ <strong>Contagem Regressiva</strong> para a formatura
+            </div>
+            <div class="display" id="countdownDisplayGlobal">
+                <div class="item">
+                    <div class="number" id="globalDias">--</div>
+                    <div class="label-small">Dias</div>
+                </div>
+                <span class="separator">:</span>
+                <div class="item">
+                    <div class="number" id="globalHoras">--</div>
+                    <div class="label-small">Horas</div>
+                </div>
+                <span class="separator">:</span>
+                <div class="item">
+                    <div class="number" id="globalMinutos">--</div>
+                    <div class="label-small">Minutos</div>
+                </div>
+                <span class="separator">:</span>
+                <div class="item">
+                    <div class="number" id="globalSegundos">--</div>
+                    <div class="label-small">Segundos</div>
+                </div>
+            </div>
+            <div class="date-info">
+                📅 <strong>11 de Dezembro de 2026</strong> · 18:00h
+            </div>
+        </div>
+
+        <!-- ============================================================
+        TABS NAV
+        ============================================================ -->
+        <nav class="tabs-nav" id="tabsNav">
+            <button class="tab-btn active" data-tab="pagamentos">
+                <span class="icon">📊</span> Controle de Pagamentos
+            </button>
+            <button class="tab-btn" data-tab="informacoes">
+                <span class="icon">📋</span> Informações da Formatura
+            </button>
+        </nav>
+
+        <!-- ============================================================
+        ABA 1: CONTROLE DE PAGAMENTOS
+        ============================================================ -->
+        <div class="tab-content active" id="tab-pagamentos">
+            <!-- Dashboard -->
+            <section class="dashboard-cards">
+                <div class="card">
+                    <div class="card-label">Total de Participantes</div>
+                    <div class="card-value">21 <small>alunos</small></div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Período Controlado</div>
+                    <div class="card-value">Fev – Jul <small>2026</small></div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Eventos Cadastrados</div>
+                    <div class="card-value">Trote · Rifa</div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Status do Sistema</div>
+                    <div class="card-value">✅ Ativo <span class="pill">em dia</span></div>
+                </div>
+            </section>
+
+            <!-- Search -->
+            <div class="search-bar">
+                <div class="search-wrapper">
+                    <span class="icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Buscar participante..." autocomplete="off">
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="info-box">
+                <span>⚠️</span>
+                <div><strong>Alerta de atraso:</strong> Considera apenas os meses (Fevereiro, Março, Abril, Maio, Junho, Julho).
+                Trote e Rifa <strong>não</strong> são contados.</div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome Completo</th>
+                            <th>Fevereiro</th>
+                            <th>Março</th>
+                            <th><span class="highlight-trote">Trote Março</span></th>
+                            <th>Abril</th>
+                            <th><span class="highlight-rifa">Rifa Abril</span></th>
+                            <th>Maio</th>
+                            <th>Junho</th>
+                            <th>Julho</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- Legend -->
+            <div class="legend">
+                <span class="legend-item">
+                    <span class="legend-color amarelo"></span>
+                    3 meses em aberto <span style="color:#f59e0b;font-weight:500;">(atenção)</span>
+                </span>
+                <span class="legend-item">
+                    <span class="legend-color vermelho"></span>
+                    4+ meses em aberto <span style="color:#dc2626;font-weight:500;">(cortado)</span>
+                </span>
+                <span class="legend-item">
+                    <span class="status-badge pago" style="width:24px;height:24px;font-size:0.85rem;">✅</span>
+                    Pago
+                </span>
+                <span class="legend-item">
+                    <span class="status-badge nao-pago" style="width:24px;height:24px;font-size:0.85rem;">❌</span>
+                    Não pago
+                </span>
+            </div>
+                    <!-- ============================================================
+        ABA 2: INFORMAÇÕES
+        ============================================================ -->
+        <div class="tab-content" id="tab-informacoes">
+            <div class="info-grid">
+                <!-- Main -->
+                <div class="info-main">
+                    <div class="section-title">📋 Informações Oficiais</div>
+                    <div class="section-subtitle">Todos os detalhes sobre a formatura 2026</div>
+
+                    <div class="info-item">
+                        <div class="emoji-box">📍</div>
+                        <div class="content">
+                            <div class="label">Local do Evento</div>
+                            <div class="value"><span class="highlight">Clube dos Santos</span></div>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="emoji-box">👔</div>
+                        <div class="content">
+                            <div class="label">Dress Code &amp; Paleta</div>
+                            <div class="value">
+                                Roupas de grife e trajes de festa na paleta <span class="highlight">azul</span>
+                                <span class="badge">Elegante</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="emoji-box">👥</div>
+                        <div class="content">
+                            <div class="label">Convidados</div>
+                            <div class="value">
+                                Cada formando tem direito a <span class="highlight">5 convidados</span>
+                                <span class="badge">Incluso</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="emoji-box">💰</div>
+                        <div class="content">
+                            <div class="label">Convidados Extras</div>
+                            <div class="value">
+                                Passou de 5 convidados: <span class="highlight">R$ 50,00</span> por adicional
+                                <span class="badge badge-gold">Taxa extra</span>
+                                <ul>
+                                    <li>Crianças de colo até 3-4 anos <strong>não pagam</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="emoji-box">🎵</div>
+                        <div class="content">
+                            <div class="label">Música &amp; Entretenimento</div>
+                            <div class="value">
+                                Músicas formais com repertório internacional e baile
+                                <span class="badge">Clássicos</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="emoji-box">🍽️</div>
+                        <div class="content">
+                            <div class="label">Serviço de Alimentação</div>
+                            <div class="value">
+                                <ul>
+                                    <li>🥂 Entradas durante o evento</li>
+                                    <li>🍽️ Jantar no meio do evento</li>
+                                    <li>🍰 Sobremesa ao final</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="info-side">
+                    <!-- Contato -->
+                    <div class="side-card">
+                        <div class="icon-big">📧</div>
+                        <h3>Contato da Comissão</h3>
+                        <p>Dúvidas ou sugestões? Entre em contato com a comissão organizadora.</p>
+                        <div class="contact">fterceiroa@gmail.com</div>
+                    </div>
+
+                    <!-- Organização -->
+                    <div class="side-card">
+                        <div class="icon-big">🎯</div>
+                        <h3>Organização</h3>
+                        <p>
+                            Comissão de formatura trabalhando para tornar este momento inesquecível.
+                            <br><span style="color:#64748b;font-size:0.8rem;">Turma 2026</span>
+                        </p>
+                    </div>
+
+                    <!-- Evento -->
+                    <div class="side-card">
+                        <div class="icon-big">🎉</div>
+                        <h3>Sobre o Evento</h3>
+                        <p>
+                            Uma noite de gala para celebrar a conquista de toda a turma.
+                            <br><span style="color:#f59e0b;font-weight:500;">✨ Não perca!</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // 1. DADOS DOS PARTICIPANTES
+        // ============================================================
+        const participants = [
+            { name: "Ana Lucia da Cruz Martins", Fev: "✅", Mar: "✅", Trote: "✅", Abr: "✅", Rifa: "✅", Mai: "❌",
+                Jun: "❌", Jul: "❌" },
+            { name: "Andrenilson Conceição Rocha", Fev: "✅", Mar: "✅", Trote: "✅", Abr: "✅", Rifa: "❌", Mai: "❌",
+                Jun: "❌", Jul: "❌" },
+            { name: "Antônia Fabricia Fontineles Cardoso", Fev: "✅", Mar: "✅", Trote: "✅", Abr: "✅", Rifa: "✅",
+                Mai: "✅", Jun: "✅", Jul: "❌" },
+            { name: "Emilly Cristiny Alves", Fev: "✅", Mar: "✅", Trote: "✅", Abr: "✅", Rifa: "❌", Mai: "✅",
+                Jun: "❌", Jul: "❌" },
+            { name: "Gabriel Ferreira Alves", Fev: "✅", Mar: "✅", Trote: "❌", Abr: "✅", Rifa: "✅", Mai: "✅",
+                Jun: "✅", Jul: "❌" },
+            { name: "Gustavo Galvão Rezende", Fev: "✅", Mar: "✅", Trote: "✅", Abr: "✅", Rifa: "✅", Mai: "✅",
+                Jun: "✅", Jul: "✅" },
+            { name: "Hakelly Borges Barcelos", Fev: "✅", Mar: "✅", Trote: "✅", Abr: "✅", Rifa: "✅", Mai: "✅",
+                Jun: "✅", Jul: "✅" },
+            { name: "Helen Vilela Rodrigues", Fev: "✅", Mar: "✅", Trote: "✅", Abr: "✅", Rifa: "✅", Mai: "✅",
+                Jun: "✅", Jul: "❌" },
+            { name: "Hevilly Andreina Brito de Souza", Fev: "✅", Mar: "✅", Trote: "✅", Abr: "✅", Rifa: "✅",
+                Mai: "✅", Jun: "✅", Jul: "✅" },
+            { name: "Isabella Silva Ferreira", Fev: "✅", Mar: "✅", Trote: "✅", Abr: "✅", Rifa: "✅", Mai: "❌",
+                Jun: "✅", Jul: "❌" },
+            { name: "Jeniffer França da Silva", Fev: "✅", Mar: "✅", Trote: "✅", Abr: "❌", Rifa: "❌", Mai: "✅",
+                Jun: "✅", Jul: "❌" },
+            { name: "João Victor Araújo de Jesus", Fev: "✅", Mar: "✅", Trote: "✅", Abr: "❌", Rifa: "❌", Mai: "✅",
+                Jun: "✅", Jul: "❌" },
+            { name: "Lara Kawany da Silva de Melo", Fev: "✅", Mar: "✅", Trote: "✅", Abr: "✅", Rifa: "✅", Mai: "❌",
+                Jun: "❌", Jul: "❌" },
+            { name: "Letícia da Silva Santos", Fev: "✅", Mar: "✅", Trote: "❌", Abr: "✅", Rifa: "✅", Mai: "✅",
+                Jun: "✅", Jul: "❌" },
+            { name: "Luismar Nunes Barbosa", Fev: "✅", Mar: "✅", Trote: "✅", Abr: "✅", Rifa: "❌", Mai: "✅",
+                Jun: "❌", Jul: "❌" },
+            { name: "Ana Luiza de Jesus Batista", Fev: "✅", Mar: "✅", Trote: "✅", Abr: "✅", Rifa: "❌", Mai: "✅",
+                Jun: "✅", Jul: "❌" },
+            { name: "Marcos Vinícius Saraiva Machado", Fev: "✅", Mar: "✅", Trote: "✅", Abr: "✅", Rifa: "✅",
+                Mai: "✅", Jun: "❌", Jul: "❌" },
+            { name: "Maria Neuziane Dutra Teixeira", Fev: "✅", Mar: "✅", Trote: "✅", Abr: "✅", Rifa: "✅", Mai: "✅",
+                Jun: "✅", Jul: "❌" },
+            { name: "Ryan Pereira Matos", Fev: "✅", Mar: "✅", Trote: "✅", Abr: "✅", Rifa: "✅", Mai: "✅", Jun: "✅",
+                Jul: "❌" },
+            { name: "Victor dos Passos Silvério", Fev: "✅", Mar: "✅", Trote: "❌", Abr: "✅", Rifa: "✅", Mai: "✅",
+                Jun: "✅", Jul: "✅" },
+            { name: "Thauanny Santos de Sousa", Fev: "✅", Mar: "✅", Trote: "✅", Abr: "❌", Rifa: "✅", Mai: "✅",
+                Jun: "✅", Jul: "❌" }
+        ];
+
+        // ============================================================
+        // 2. TABELA
+        // ============================================================
+        const tbody = document.getElementById('tableBody');
+        const searchInput = document.getElementById('searchInput');
+
+        function contarMesesAberto(p) {
+            const meses = [p.Fev, p.Mar, p.Abr, p.Mai, p.Jun, p.Jul];
+            return meses.filter(status => status === '❌').length;
         }
 
-        .info-main {
-            background: #ffffff;
-            border-radius: 28px;
-            padding: 36px;
-            border: 1px solid #e8edf5;
-            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.02);
+        function getAlertaClass(p) {
+            const meses = contarMesesAberto(p);
+            if (meses >= 4) return 'alerta-4-meses';
+            if (meses === 3) return 'alerta-3-meses';
+            return '';
         }
 
-        .info-main .section-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #0b1a33;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        function statusBadge(value) {
+            const isPago = value === '✅';
+            const cls = isPago ? 'pago' : 'nao-pago';
+            return `<span class="status-badge ${cls}">${value}</span>`;
         }
 
-        .info-main .section-subtitle {
-            color: #64748b;
-            font-size: 0.9rem;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid #f1f4f9;
+        function renderTable(filter = '') {
+            const filtered = participants.filter(p =>
+                p.name.toLowerCase().includes(filter.toLowerCase().trim())
+            );
+
+            let html = '';
+            for (const p of filtered) {
+                const alertaClass = getAlertaClass(p);
+                html += `<tr class="${alertaClass}">
+                    <td>${p.name}</td>
+                    <td>${statusBadge(p.Fev)}</td>
+                    <td>${statusBadge(p.Mar)}</td>
+                    <td class="col-trote">${statusBadge(p.Trote)}</td>
+                    <td>${statusBadge(p.Abr)}</td>
+                    <td class="col-rifa">${statusBadge(p.Rifa)}</td>
+                    <td>${statusBadge(p.Mai)}</td>
+                    <td>${statusBadge(p.Jun)}</td>
+                    <td>${statusBadge(p.Jul)}</td>
+                </tr>`;
+            }
+
+            if (filtered.length === 0) {
+                html =
+                    `<tr><td colspan="9" style="text-align:center;padding:40px 0;color:#94a3b8;">Nenhum participante encontrado</td></tr>`;
+            }
+
+            tbody.innerHTML = html;
         }
 
-        .info-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-            padding: 16px 0;
-            border-bottom: 1px solid #f1f4f9;
+        searchInput.addEventListener('input', function() {
+            renderTable(this.value);
+        });
+
+        renderTable();
+
+        // ============================================================
+        // 3. TABS
+        // ============================================================
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = {
+            pagamentos: document.getElementById('tab-pagamentos'),
+            informacoes: document.getElementById('tab-informacoes')
+        };
+
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                tabButtons.forEach(b => b.classList.remove('active'));
+                Object.values(tabContents).forEach(c => c.classList.remove('active'));
+
+                this.classList.add('active');
+                const tabId = this.dataset.tab;
+                if (tabContents[tabId]) tabContents[tabId].classList.add('active');
+            });
+        });
+
+        // ============================================================
+        // 4. COUNTDOWN GLOBAL - 11/12/2026 18:00
+        // ============================================================
+        const targetDate = new Date('2026-12-11T18:00:00').getTime();
+
+        function updateGlobalCountdown() {
+            const now = Date.now();
+            const diff = targetDate - now;
+
+            if (diff <= 0) {
+                ['globalDias', 'globalHoras', 'globalMinutos', 'globalSegundos'].forEach(id =>
+                    document.getElementById(id).textContent = '00'
+                );
+                return;
+            }
+
+            const d = Math.floor(diff / 86400000);
+            const h = Math.floor((diff % 86400000) / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
+
+            document.getElementById('globalDias').textContent = String(d).padStart(2, '0');
+            document.getElementById('globalHoras').textContent = String(h).padStart(2, '0');
+            document.getElementById('globalMinutos').textContent = String(m).padStart(2, '0');
+            document.getElementById('globalSegundos').textContent = String(s).padStart(2, '0');
         }
 
-        .info-item:last-child {
-            border-bottom: none;
-        }
-
-        .info-item .emoji-box {
-            width: 44px;
-            height: 44px;
-            background: #f1f4f9;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            flex-shrink: 0;
-        }
-
-        .info-item .content {
-            flex: 1;
-        }
-
-        .info-item .content .label {
-            font-weight: 600;
-            color: #0b1a33;
-            font-size: 0.9rem;
-        }
-
-        .info-item .content .value {
-            color: #475569;
-            font-size: 0.95rem;
-            margin-top: 2px;
-        }
-
-        .info-item .content .value .highlight {
-            color: #1e3a6b;
-            font-weight: 600;
-        }
-
-        .info-item .content .badge {
-            display: inline-block;
-            background: #eff6ff;
-            color: #1e40af;
-            padding: 2px 14px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 500;
-            margin-left: 8px;
-        }
-
-        .info-item .content .badge-gold {
-            background: #fef9e7;
-            color: #92400e;
-        }
-
-        .info-item .content ul {
-            list-style: none;
-            padding: 0;
-            margin-top: 6px;
-        }
-
-        .info-item .content ul li {
-            padding: 4px 0;
-            color: #475569;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .info-item .content ul li::before {
-            content: "•";
-            color: #1e3a6b;
-            font-weight: 700;
-        }
-
-        /* Sidebar */
-        .info-side {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .side-card {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 24px 28px;
-            border: 1px solid #e8edf5;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
-            transition: all 0.2s ease;
-        }
-
-        .side-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-        }
-
-        .side-card .icon-big {
-            font-size: 1.8rem;
-            margin-bottom: 6px;
-        }
-
-        .side-card h3 {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #0b1a33;
-            margin-bottom: 4px;
-        }
-
-        .side-card p {
-            color: #64748b;
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-
-        .side-card .contact {
-            color: #1e3a6b;
-         
+        updateGlobalCountdown();
+        setInterval(updateGlobalCountdown, 1000);
+    </script>
+</body>
+</html>
+        </div>
